@@ -2,34 +2,33 @@ package org.hibernate.model;
 
 
 
-import jakarta.persistence.*;
 
+import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "flashcard")
 @Entity(name = "flashcard")
-public class flashCard {
+public class FlashCard {
     @Id
-    @Column(name = "flashCard_id")
+    @Column(name = "flashCardId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "flashCard_name")
+    @Column(name = "flashCardName")
     private String name;
-    @Column(name = "flashCard_questionList")
+    @OneToMany(mappedBy = "flash",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Question> qList = new ArrayList<>();
     @Column(name = "Url")
     String url;
-    //@OneToMany(mappedBy = "subjects")
-    private int subjectId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Subject subject;
 
 
-
-    public flashCard() {
+    public FlashCard() {
 
     }
-    public flashCard(int id, String name,List<Question> qList,String url) {
+    public FlashCard(int id, String name, List<Question> qList, String url) {
 
         this.id = id;
         this.name = name;
@@ -37,16 +36,24 @@ public class flashCard {
         this.url=url;
     }
 
-    public flashCard(int id, String name,List<Question> qList) {
+    public FlashCard(int id, String name, List<Question> qList) {
 
         this.id = id;
         this.name = name;
         this.qList=qList;
     }
-    public flashCard(int id, String name) {
+    public FlashCard(int id, String name) {
 
         this.id = id;
         this.name = name;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 
     public int getId() {

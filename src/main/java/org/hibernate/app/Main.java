@@ -1,13 +1,9 @@
 package org.hibernate.app;
 
 
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import org.hibernate.model.Question;
-import org.hibernate.model.flashCard;
-import org.hibernate.model.subjects;
+import org.hibernate.model.FlashCard;
+import org.hibernate.model.Subject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,26 +11,50 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.ProfilesIni;
-
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.sql.SQLException;
 import java.util.*;
 
 
 
-public class app {
+public class Main {
+
 
     public static void main( String[] args ) throws SQLException {
 
-           /* EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("persistence");
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
-            System.out.println("Connected");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("persistence");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        System.out.println("Starting Transaction");
+//        entityManager.getTransaction().begin();
+//        subjects qq = new subjects();
+//        qq.setId(1);
+//        qq.setName("test");
+//        qq.setUrl("www.google.com");
+//        //qq.setFlashCards();
+//        entityManager.persist(qq);
+//        entityManager.getTransaction().commit();
+        //entityManager.getTransaction().begin();
+//        flashCard fc = new flashCard();
+//        fc.setId(1);
+//        fc.setName("scinse");
+//        fc.setUrl("www.tkt.com");
+//        fc.setqList();
+        //entityManager.close();
+      //  entityManagerFactory.close();
 
-            System.out.println("Not connnect");
-
-            */
-
-
+//        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+//        Session session = sessionFactory.openSession();
+//        session.beginTransaction();
+//        Question qq = new Question();
+//        qq.setId(1);
+//        qq.setName("test");
+//        session.save(qq);
+//        //end the transaction
+//        session.getTransaction().commit();
+//        //Closing the session
+//        session.close();
 
 
 
@@ -60,14 +80,12 @@ public class app {
 
 
 
-
-
         //******************************* get all subjects
         List<WebElement> listSubElm = driver.findElements(By.xpath("//*[@id=\"bd-sidebar\"]/ul/li/a"));
-        List<subjects> listOfsub = new ArrayList<>();
+        List<Subject> listOfsub = new ArrayList<>();
         int count = 0;
         int quick = 1;
-        List<flashCard> listOfflash = new ArrayList<>();
+        List<FlashCard> listOfflash = new ArrayList<>();
         List<String> linkList = new ArrayList<>();
         int qcount = 0;
         List<Question> questionsList = new ArrayList<>();
@@ -76,26 +94,104 @@ public class app {
         for (WebElement obj : listSubElm) {
 
             count++;
-            listOfsub.add(new subjects(count, obj.getText(), null, obj.getAttribute("href")));
+
+                listOfsub.add(new Subject(count, obj.getText(), null, obj.getAttribute("href")));
+            if(count==1){
+                System.out.println(listOfsub.get(0).toString());
+                entityManager.getTransaction().begin();
+                Subject ss = new Subject(listOfsub.get(0).getId(),listOfsub.get(0).getName(),listOfsub.get(0).getUrl());
+//                ss.setId();
+//                ss.setName(listOfsub.get(0).getName());
+//                ss.setUrl();
+                entityManager.persist(ss);
+                entityManager.getTransaction().commit();
+                entityManager.close();
+
+            }
         }
-       // System.out.println(listOfsub.get(0).toString());
 
-        List<flashCard> flashList = new ArrayList<>();
+
+        List<FlashCard> flashList = new ArrayList<>();
         int flashCount=0;
-        for (int i = 0; i < listOfsub.size(); i++) {
 
-            driver.get(listOfsub.get(i).getUrl());
+
+            driver.get(listOfsub.get(0).getUrl());
             // System.out.println(listOfsub.get(i).getUrl());
             List<WebElement> subjectelm = driver.findElements(By.xpath("/html/body/div/main/div[3]/div/div[3]/div/a"));
             for (WebElement obj : subjectelm) {
-                flashCount++;
-                flashList.add(new flashCard(flashCount, obj.getText(), null, obj.getAttribute("href")));
+
+                if (flashCount < 5) {
+                    flashCount++;
+                    flashList.add(new FlashCard(flashCount, obj.getText(), null, obj.getAttribute("href")));
+                    entityManager.getTransaction().begin();
+                    FlashCard fc = new FlashCard();
+
+                    fc.setId(flashList.get(flashCount-1).getId());
+                    fc.setName(flashList.get(flashCount-1).getName());
+                    fc.setUrl(flashList.get(flashCount-1).getUrl());
+                   // fc.setSubject(flashList.get(i).getSubject());
+
+                    entityManager.persist(fc);
+                    entityManager.getTransaction().commit();
+
+
+                }
             }
+            System.out.println(flashList.toString());
+
+            for(int i=0;i<flashList.size();i++){
+                questionCount =0;
+                driver.get(flashList.get(i).getUrl());
+                List<WebElement> questionElements = driver.findElements(By.xpath("/html/body/div/div/div[1]/div"));
+                for (WebElement e : questionElements) {
+                    questionCount++;
+                    if(questionCount<12){
+                        questionsList.add(new Question(questionCount, e.getText()));
 
 
-            listOfsub.get(i).setFlashCards(flashList);
+                    }
+//                    if(questionsList.get(i).getId()==1 || questionsList.get(i).getId()==2){
+//                        questionsList.remove(i);
+//                    }
+                    //questionsList.remove(0);
+                    //questionsList.remove(1);
+
+
+
+
+                }
+                flashList.get(i).setqList(questionsList);
+                questionsList.remove(0);
+                questionsList.remove(1);
+
+
+            }
+         
+
+//               System.out.println("=======================");
+//                 System.out.println(questionsList.toString());
+//        System.out.println(questionsList.get(0)+"======>0");
+//        System.out.println(questionsList.get(1)+"======>1");
+//        System.out.println(questionsList.get(2)+"======>0");
+
+
+            System.out.println(flashList.toString());
+            ;
+
+
+
+        /*
+
+
+
+
+
+
+
+
 
             //****************************************handle button next
+            listOfsub.get(i).setFlashCards(flashList);
             String str = driver.findElement(By.xpath("/html/body/div/main/div[3]/div/div[2]/nav/a[2]")).getText();
             String[] arr = str.split(" ");
             int firstNumber = Integer.parseInt(arr[0]);
@@ -134,8 +230,8 @@ public class app {
         //******************************************saving flashCard objects
         for (int j = 0; j < listOfsub.size(); j++) {
             driver.get(listOfsub.get(j).getUrl());
-            for (int i = 0; i < listOfflash.size(); i++) {
-                driver.get(listOfflash.get(i).getUrl());
+            for (int k = 0; k < listOfflash.size(); k++) {
+                driver.get(listOfflash.get(k).getUrl());
                 List<WebElement> questionElements = driver.findElements(By.xpath("/html/body/div/div/div[1]/div"));
 
                 for (WebElement e : questionElements) {
@@ -144,7 +240,7 @@ public class app {
                 }
                 questionsList.remove(0);
                 questionsList.remove(1);
-                listOfflash.get(i).setqList(questionsList);
+                listOfflash.get(k).setqList(questionsList);
                 //Try catch
               //  System.out.println(listOfflash.toString());
 
@@ -154,6 +250,7 @@ public class app {
 
 
 
+         */
 
 
 

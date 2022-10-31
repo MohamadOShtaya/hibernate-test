@@ -3,34 +3,34 @@ package org.hibernate.model;
 
 
 
-import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "subjects")
-@Table(name = "subjects")
-public class subjects {
+import javax.persistence.*;
+
+@Entity(name = "subject")
+@Table(name = "subject")
+public class Subject {
 
     @Id
-    @Column(name = "subject_id")
+    @Column(name = "subjectId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id ;
-    @Column(name = "subject_name")
+    @Column(name = "subjectName")
     private String name;
-    @Column(name = "subject_url")
+    @Column(name = "subjectUrl")
     private String url;
-    @Column(name = "subject_flashCardList")
-    private List<flashCard> flashCards= new ArrayList<>();
-    public subjects() {
+    @OneToMany(mappedBy = "subject",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<FlashCard> flashCards= new ArrayList<>();
+    public Subject() {
 
     }
-    public subjects(int id, String name) {
+    public Subject(int id, String name) {
         super();
         this.id = id;
         this.name = name;
     }
-    public subjects(int id, String name, ArrayList<flashCard> flashCards, String url) {
+    public Subject(int id, String name, ArrayList<FlashCard> flashCards, String url) {
         super();
         this.id = id;
         this.name = name;
@@ -39,7 +39,11 @@ public class subjects {
     }
 
 
-
+    public Subject(int id, String name, String url) {
+        this.id = id;
+        this.name = name;
+        this.url = url;
+    }
 
     public int getId() {
         return id;
@@ -47,10 +51,10 @@ public class subjects {
     public void setId(int id) {
         this.id = id;
     }
-    public List<flashCard> getFlashCards(){
+    public List<FlashCard> getFlashCards(){
         return flashCards;
     }
-    public void setFlashCards(List<flashCard> flashCards){
+    public void setFlashCards(List<FlashCard> flashCards){
         this.flashCards=flashCards;
     }
     public String getName() {

@@ -1,9 +1,12 @@
 package org.hibernate.model;
 
-import jakarta.persistence.*;
 
-@Entity(name = "Question")
-@Table(name = "Question")
+
+import javax.persistence.*;
+
+
+@Entity(name = "question")
+@Table(name = "question")
 public class Question {
     @Id
     @Column(name = "questionId")
@@ -11,22 +14,19 @@ public class Question {
     private int id ;
     @Column(name = "questionName")
     private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private FlashCard flash;
 
 
-    @OneToMany(mappedBy = "flashCard")
-    private int subjectId;
     public Question(int id, String name) {
         this.id = id;
         this.name = name;
     }
+    public Question() {
 
-    public int getSubjectId() {
-        return subjectId;
     }
 
-    public void setSubjectId(int subjectId) {
-        this.subjectId = subjectId;
-    }
+
 
     public int getId() {
         return id;
