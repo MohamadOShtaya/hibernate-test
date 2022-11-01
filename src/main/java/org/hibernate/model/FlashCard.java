@@ -14,37 +14,51 @@ public class FlashCard {
     @Id
     @Column(name = "flashCardId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int flashCardId;
     @Column(name = "flashCardName")
     private String name;
     @OneToMany(mappedBy = "flash",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Question> qList = new ArrayList<>();
     @Column(name = "Url")
     String url;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+    @JoinColumn(name = "questionId")
     private Subject subject;
+
+    private  int subjectId;
+
+
 
 
     public FlashCard() {
 
     }
-    public FlashCard(int id, String name, List<Question> qList, String url) {
+    public FlashCard( String name, List<Question> qList, String url) {
 
-        this.id = id;
+
         this.name = name;
         this.qList=qList;
         this.url=url;
     }
 
+
+    public FlashCard(String name, List<Question> qList, String url, Subject subject,int subjectId) {
+        this.name = name;
+        this.qList = qList;
+        this.url = url;
+        this.subject = subject;
+        this.subjectId=subjectId;
+    }
+
     public FlashCard(int id, String name, List<Question> qList) {
 
-        this.id = id;
+        this.flashCardId = id;
         this.name = name;
         this.qList=qList;
     }
     public FlashCard(int id, String name) {
 
-        this.id = id;
+        this.flashCardId = id;
         this.name = name;
     }
 
@@ -57,11 +71,11 @@ public class FlashCard {
     }
 
     public int getId() {
-        return id;
+        return flashCardId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.flashCardId = id;
     }
     public String getUrl(){
         return url;
@@ -85,7 +99,7 @@ public class FlashCard {
 
     @Override
     public String toString() {
-        return "flahcard [id=" + id + ", name=" + name + "]"+"question List"+qList+"Url"+url+"]";
+        return "flahcard [id=" + flashCardId + ", name=" + name + "]"+"question List"+qList+"Url"+url+"]";
 
     }
 }

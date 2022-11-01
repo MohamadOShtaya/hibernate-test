@@ -25,10 +25,10 @@ public class Subject {
     public Subject() {
 
     }
-    public Subject(int id, String name) {
-        super();
-        this.id = id;
+    public Subject( String name,String url) {
+
         this.name = name;
+        this.url=url;
     }
     public Subject(int id, String name, ArrayList<FlashCard> flashCards, String url) {
         super();
@@ -39,11 +39,7 @@ public class Subject {
     }
 
 
-    public Subject(int id, String name, String url) {
-        this.id = id;
-        this.name = name;
-        this.url = url;
-    }
+
 
     public int getId() {
         return id;
