@@ -33,6 +33,12 @@ public class Question {
         this.flash = flash;
     }
 
+    public Question(int questionId, String questionName, FlashCard flash) {
+        this.questionId = questionId;
+        this.questionName = questionName;
+        this.flash = flash;
+    }
+
     public int getId() {
         return questionId;
     }
