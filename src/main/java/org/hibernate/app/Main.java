@@ -63,6 +63,7 @@ public class Main {
                 entityManager.getTransaction().commit();
             }
         }
+        int myCount =1;
         for (int i = 0; i < listOfsub.size(); i++) {
             driver.get(listOfsub.get(i).getUrl());
             //****************************************handle button next
@@ -81,6 +82,19 @@ public class Main {
                     qcount++;
                     linkList.add(obj.getAttribute("href"));
                     listOfflash.add(new FlashCard(obj.getText(), null, obj.getAttribute("href")));
+                    myCount++;
+                    if(myCount==6){
+                        for(int j=0;j<listOfflash.size();j++){
+                          entityManager.getTransaction().begin();
+                            String name = listOfflash.get(j).getName();
+                            String url = listOfflash.get(j).getUrl();
+                            int subjectId=1;
+                            FlashCard fc = new FlashCard(name,null,url,listOfsub.get(j),subjectId);
+                            entityManager.persist(fc);
+                            entityManager.getTransaction().commit();
+                        }
+
+                    }
                 }
                 listOfsub.get(i).setFlashCards(listOfflash);
                 btnNext.click();
