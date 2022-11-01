@@ -28,11 +28,10 @@ public class Repo  implements  RepoInterface{
     List<Subject> listOfsub = new ArrayList<>();
     int count = 0;
     int quick = 1;
-    int questionCount = 0;
+
     int myCount =1;
     int myQuestionCount =1;
-    List<Question> tempQuestionsList = new ArrayList<>();
-    int tempQuestionsListcount=0;
+
     public Repo(EntityManager entityManager) {
 
         this.entityManager = entityManager;
@@ -137,14 +136,14 @@ public class Repo  implements  RepoInterface{
                     List<WebElement> questionElements = driver.findElements(By.xpath("/html/body/div/div/div[1]/div"));
 
                     for (WebElement e : questionElements) {
-                        questionCount++;
+
                         myQuestionCount++;
-                        questionsList.add(new Question(questionCount, e.getText()));
+                        questionsList.add(new Question(e.getText()));
                     }
                     questionsList.remove(0);
                     questionsList.remove(1);
                     listOfflash.get(k).setqList(questionsList);
-                    if(myQuestionCount <=12){
+                    if(myQuestionCount ==12){
                         String name = questionsList.get(k).getName();
                         Question ques = new Question(name,listOfflash.get(k));
                         entityManager.getTransaction().begin();

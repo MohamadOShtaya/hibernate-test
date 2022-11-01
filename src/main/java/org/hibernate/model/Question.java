@@ -20,8 +20,7 @@ public class Question {
     private FlashCard flash;
 
 
-    public Question(int id, String name) {
-        this.questionId = id;
+    public Question(String name) {
         this.questionName = name;
     }
 
