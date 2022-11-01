@@ -18,8 +18,8 @@ public class Main {
 
         entityManager.getTransaction().begin();
         fileRepository=new Repo(entityManager);
-       // System.out.println(get().toString());
         fileRepository.saveSubject();
+        fileRepository.getAllQuestions();
         entityManager.getTransaction().commit();
         entityManager.close();
 
