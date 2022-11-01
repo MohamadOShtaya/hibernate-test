@@ -15,6 +15,7 @@ public class Question {
     @Column(name = "questionName")
     private String questionName;
 
+
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
     private FlashCard flash;
 

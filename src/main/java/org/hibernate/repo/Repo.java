@@ -30,6 +30,7 @@ public class Repo  implements  RepoInterface{
     int quick = 1;
     int questionCount = 0;
     int myCount =1;
+    int myQuestionCount =1;
     List<Question> tempQuestionsList = new ArrayList<>();
     int tempQuestionsListcount=0;
     public Repo(EntityManager entityManager) {
@@ -96,7 +97,6 @@ public class Repo  implements  RepoInterface{
                                 entityManager.getTransaction().commit();
                             }
 
-
                         }
                     }
                     listOfsub.get(i).setFlashCards(listOfflash);
@@ -138,20 +138,19 @@ public class Repo  implements  RepoInterface{
 
                     for (WebElement e : questionElements) {
                         questionCount++;
+                        myQuestionCount++;
                         questionsList.add(new Question(questionCount, e.getText()));
                     }
                     questionsList.remove(0);
                     questionsList.remove(1);
                     listOfflash.get(k).setqList(questionsList);
-
-                    String name = questionsList.get(k).getName();
-                    Question ques = new Question(name,listOfflash.get(k));
-                    entityManager.getTransaction().begin();
-                    entityManager.persist(ques);
-                    entityManager.getTransaction().commit();
-                    //Try catch
-                    //  System.out.println(listOfflash.toString());
-
+                    if(myQuestionCount <=12){
+                        String name = questionsList.get(k).getName();
+                        Question ques = new Question(name,listOfflash.get(k));
+                        entityManager.getTransaction().begin();
+                        entityManager.persist(ques);
+                        entityManager.getTransaction().commit();
+                    }
                 }
 
             }
